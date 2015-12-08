@@ -1,3 +1,11 @@
+#!/user/bin/env python3
+#-*_ coding:utf-8 -*-
+
+__author__='liuang'
+'''
+async web application
+'''
+
 import logging;logging.basicConfig(level=logging.INFO)
 import asyncio,os,json,time
 from aiohttp import web
