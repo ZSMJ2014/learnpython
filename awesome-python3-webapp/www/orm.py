@@ -4,7 +4,7 @@ __author__='liuang'
 
 import asyncio,logging
 import aiomysql
-
+logging.basicConfig(level=logging.INFO)
 def log(sql,args=()):
     logging.info("SQL:%s"%sql)
 @asyncio.coroutine
@@ -46,7 +46,7 @@ def execute(sql,args,autocommit=True):
             yield from conn.begin()
         try:
             cur=yield from conn.cursor()
-            yield from cur.execute(sql,replace('?','%s'),args)
+            yield from cur.execute(sql.replace('?','%s'),args)
             affected=cur.rowcount
             yield from cur.close()
             if not autocommit:
@@ -54,7 +54,7 @@ def execute(sql,args,autocommit=True):
         except BaseException as e:
             if not autocommit:
                 yield from conn.rollback()
-            rase
+            raise
         return affected
 def create_args_string(num):
     L=[];
