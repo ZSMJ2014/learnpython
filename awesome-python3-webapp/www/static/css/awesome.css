@@ -1,0 +1,16 @@
+/*
+*custom css
+ */
+a:hover,a:active{
+  text-decoration:none;
+}
+#vm{
+  display:none;
+}
+#error{
+  display:none;
+  margin-bottom:15px;
+}
+#loading{
+  margin-bottom:15px;
+}

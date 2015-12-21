@@ -93,7 +93,7 @@ def response_factory(app,handler):
         resp.content_type='text/plain;charset=utf-8'
         return resp
     return response
-def datatime_filter(t):
+def datetime_filter(t):
     delta=int(time.time()-t)
     if delta<60:
         return u'1分钟前'
@@ -111,7 +111,7 @@ def datatime_filter(t):
 def init(loop):
     yield from orm.create_pool(loop=loop,**configs.db)
     app=web.Application(loop=loop,middlewares=[logger_factory,response_factory])
-    init_jinja2(app,filters=dict(datatime=datatime_filter))
+    init_jinja2(app,filters=dict(datetime=datetime_filter))
     add_routes(app,'handlers')
     add_static(app)
     srv=yield from loop.create_server(app.make_handler(),'127.0.0.1',9000)
