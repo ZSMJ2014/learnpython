@@ -155,7 +155,7 @@ class RequestHandler(object):
 def add_static(app):
     path=os.path.join(os.path.dirname(os.path.abspath(__file__)),'static')
     app.router.add_static('/static/',path)
-    logging.info('add static %s=>%s' % ('/sstatic/',path))
+    logging.info('add static %s=>%s' % ('/static/',path))
 
 def add_route(app,fn):
     #获取'__method__'和'__route__'属性，如果有空则抛出异常
