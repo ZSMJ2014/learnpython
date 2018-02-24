@@ -33,4 +33,4 @@ for i in range(1000):
 correct_prediction = tf.equal(tf.arg_max(y, 1), tf.arg_max(y_, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 
-print("Accuarcy on Test-dataset:", sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels}))
+print("Accuarcy on Test-dataset:", sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels}));
