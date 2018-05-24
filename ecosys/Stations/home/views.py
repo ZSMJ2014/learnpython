@@ -10,6 +10,7 @@ from django.http import HttpResponseBadRequest
 from django import forms
 from django.template import RequestContext
 import django_excel as excel
+# from django.utils import simplejson
 import pandas as pd
 
 # Create your views here.
@@ -41,14 +42,16 @@ def index(request):
 @csrf_exempt
 def upload_data(request):
     f = request.FILES['datafile']
+    excel_raw_data = pd.read_excel(f)
+    cols=list(excel_raw_data.columns)
+    # table=excel_raw_data.parse("菌类物种")
     # sheet = f.get_sheet()
     # array = f.get_array()
 
     # list = sheet.split('/n')
     # data = excel.make_response_from_array(list,'csv')
     # django-execl
-
-    data = excel.make_response(f.get_sheet(), "csv", file_name="sample")
+    # data = excel.make_response(f.get_sheet(), "csv", file_name="sample")
     # file_content = data.getvalue().split(',')[10]
 
 
@@ -58,7 +61,7 @@ def upload_data(request):
     #     for chunk in f.chunks():
     #         w.write(chunk)
 
-    return data
+    return HttpResponse(cols, content_type="application/json;charset=utf-8")
     # return HttpResponse(file_content)
 
 
