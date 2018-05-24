@@ -12,20 +12,7 @@
     <link href="{{ STATIC_URL }}css/ol.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
 
-    <script type="text/javascript" src="{{ STATIC_URL }}jquery.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}jquery.cookie.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}jquery.form.js"></script>
 
-    <script type="text/javascript" src="{{ STATIC_URL }}ol.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}csv2geojson.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}stations.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}echarts.simple.min.js"></script>
-
-    <script>
-        function bioindexCompute() {
-            document.getElementById("results").innerHTML = "生物多样性指数计算结果如下： 物种丰富度: ; \n Simpson优势度指数： ；\n Shannon-Winner多样性指数: ;";
-        }
-    </script>
 
 
 </head>
@@ -76,17 +63,59 @@
     </div>
 </nav>
 <div class="tab-content" id="nav-tabContent">
-    <div class="tab-pane fade show active" id="nav-table" role="tabpanel" aria-labelledby="nav-table-tab">show data
-        uploaded
-    </div>
+    <div class="tab-pane fade show active" id="nav-table" role="tabpanel" aria-labelledby="nav-table-tab">show data uploaded</div>
     <div class="tab-pane fade" id="nav-map" role="tabpanel" aria-labelledby="nav-map-tab">show samples on map</div>
     <div class="tab-pane fade" id="nav-chart" role="tabpanel" aria-labelledby="nav-chart-tab">add chart</div>
 </div>
 
 
 <div id="sample_table"></div>
-<script type="text/javascript">
-    $('#datafile-form').ajaxForm({
+<script>
+
+
+</script>
+
+
+<div id="map"></div>
+
+
+<!--preparing a DOM with width and height for ECharts-->
+<div id="echarts"></div>
+
+
+
+<h2>生物多样性指数计算</h2>
+
+<div>
+    <button onClick="bioindexCompute()">计算生物多样性指数</button>
+</div>
+<br>
+<p id="results"></p>
+
+
+<br>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
+        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery.cookie.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery.form.js"></script>
+
+    <script type="text/javascript" src="{{ STATIC_URL }}ol.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}csv2geojson.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}stations.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}echarts.simple.min.js"></script>
+
+    <script>
+        $(function(){
+            $('#datafile-form').ajaxForm({
         url: "/upload_data",
         success: function (data) {
             //显示data
@@ -147,11 +176,12 @@
     $("#data-file").on("change", function () {
         $("#file-upload-submit").trigger("click");
     });
-
-</script>
-
-
-<div id="map"></div>
+        });
+        function bioindexCompute() {
+            document.getElementById("results").innerHTML = "";
+            $("#results").html("生物多样性指数计算结果如下： 物种丰富度: ; \n Simpson优势度指数： ；\n Shannon-Winner多样性指数: ;");
+        }
+    </script>
 <script>
     function csrfSafeMethod(method) {
 // these HTTP methods do not require CSRF protection
@@ -185,9 +215,6 @@
         })
     });
 </script>
-
-<!--preparing a DOM with width and height for ECharts-->
-<div id="echarts"></div>
 <script type="text/javascript">
     // based on prepared DOM, initialize echarts instance
     var myChart = echarts.init(document.getElementById('echarts'));
@@ -214,27 +241,5 @@
     // use configuration item and data specified to show chart
     myChart.setOption(option);
 </script>
-
-
-<h2>生物多样性指数计算</h2>
-
-<div>
-    <button onClick="bioindexCompute()">计算生物多样性指数</button>
-</div>
-<br>
-<p id="results"></p>
-
-
-<br>
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-        integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
-        crossorigin="anonymous"></script>
 </body>
 </html>
