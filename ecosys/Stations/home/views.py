@@ -15,6 +15,7 @@ import pandas as pd
 import numpy as np
 import math
 import json
+import codecs
 
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
@@ -46,7 +47,7 @@ def index(request):
 def upload_data(request):
     f = request.FILES['datafile']
     excel_raw_data = pd.read_excel(f)
-    excel_raw_data.to_csv('/tmp/bio_data.csv')
+    excel_raw_data.to_csv('/tmp/bio_data.csv', encoding='utf-8')
 
     cols=list(excel_raw_data.columns)
     # table=excel_raw_data.parse("菌类物种")
@@ -68,6 +69,31 @@ def upload_data(request):
 
     return HttpResponse(cols, content_type="application/json;charset=utf-8")
     # return HttpResponse(file_content)
+
+def get_latlon():
+    # df = pd.read_csv('/tmp/bio_data.csv', encoding='utf-8')
+    df = pd.read_csv('/tmp/bio_data.csv')
+    #     parse the column from the request
+    long_col = 6
+    lat_col = 7
+
+    lat_lon = df.iloc[:, long_col:lat_col+1]
+    lat_lon.columns = ['d', 'c']
+    print(lat_lon)
+    lat_lon.to_csv("/tmp/latlon.csv", index=False)
+    # str = lat_lon.to_string(index=False)
+
+
+    # # lat_lon = pd.DataFrame(df.iloc[:,long_col:lat_col], columns=['d', 'c'])
+    # # sample_loc = json.dumps(lat_lon, encoding='utf-8')
+    #
+    # write_data = '''STATION_DATA = "%s" '''% str
+    # # write_data = unicode(write_data, errors='ignore')
+    # # write_data.encode('utf-8')
+    # # print(write_data)
+    # station_file = codecs.open("/tmp/station.js",encoding='utf-8',mode='w')
+    # station_file.write(write_data)
+    # station_file.close()
 
 
 def total_number_of_species(species):
@@ -138,16 +164,20 @@ def cal_bioindex(request):
     index_results = json.dumps({"物种丰富度": total_num_of_species, "Simpson优势度指数": simpson_idx, "Shannon-Wiener多样性指数": shannonwiener_idx })
     return HttpResponse(index_results, content_type="application/json; charset=utf-8")
 
+def test_mapvis():
+    get_latlon()
 
-def test():
+def test_bioindex():
     # file = "/root/PycharmProjects/learnpython/ecosys/Stations/兴山县大型真菌采样信息表.xlsx"
     # excel_raw_data = pd.read_excel(file)
     # excel_raw_data.to_csv('/tmp/bio_data.csv', encoding='utf-8')
     df = pd.read_csv('/tmp/bio_data.csv', encoding='utf-8')
-    #     parse the column from the request
-    spec_col = 9
     cols = df.columns
     print(cols)
+
+    #     parse the column from the request
+    spec_col = 9
+
     species = df.iloc[:,spec_col]
     total_num_of_species = total_number_of_species(species)
     x = species_distribution(species)
@@ -159,8 +189,8 @@ def test():
     print(index_results)
 
 if __name__== '__main__':
-    test()
-
+    # test_bioindex()
+    test_mapvis()
 
 
 
