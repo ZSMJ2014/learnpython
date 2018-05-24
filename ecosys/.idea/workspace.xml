@@ -2,36 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="04ff1746-dbc2-428b-b0b5-fc49882f470c" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/../Stations/.gitignore" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/Stations/__init__.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/Stations/settings.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/Stations/urls.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/Stations/wsgi.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/db.sqlite3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/home/__init__.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/home/admin.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/home/apps.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/home/migrations/__init__.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/home/models.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/home/tests.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/home/views.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/manage.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/css/ol.css" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/css/style.css" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/csv2geojson.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/echarts.simple.min.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/images/logo.jpg" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/jquery.cookie.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/jquery.form.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/jquery.min.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/ol-debug.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/ol-deps.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/ol.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/poi.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/static/stations.js" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/templates/index.html" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/templates/index.origin.html" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/../Stations/兴山县大型真菌采样信息表.xlsx" afterPath="" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -82,6 +52,11 @@
             <path>
               <item name="ecosys" type="b2602c69:ProjectViewProjectNode" />
               <item name="ecosys" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ecosys" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ecosys" type="462c0819:PsiDirectoryNode" />
+              <item name="Stations" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -135,7 +110,21 @@
       <option name="project" value="LOCAL" />
       <updated>1527122428521</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="re">
+      <created>1527122478823</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1527122478823</updated>
+    </task>
+    <task id="LOCAL-00004" summary="re">
+      <created>1527122527092</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1527122527092</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -144,9 +133,9 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2498615" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -197,7 +186,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="delete" />
-    <option name="LAST_COMMIT_MESSAGE" value="delete" />
+    <MESSAGE value="re" />
+    <option name="LAST_COMMIT_MESSAGE" value="re" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
