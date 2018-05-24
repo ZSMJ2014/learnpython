@@ -15,6 +15,7 @@ import pandas as pd
 import numpy as np
 import math
 import json
+import time
 import codecs
 
 # Create your views here.
@@ -47,7 +48,9 @@ def index(request):
 def upload_data(request):
     f = request.FILES['datafile']
     excel_raw_data = pd.read_excel(f)
-    excel_raw_data.to_csv('/tmp/bio_data.csv', encoding='utf-8')
+    tempfile=str(time.time()*1000)+".csv"
+    excel_raw_data.to_csv('/tmp/'+tempfile, encoding='utf-8')
+    request.session["tempfile"]=tempfile
 
     cols=list(excel_raw_data.columns)
     # table=excel_raw_data.parse("菌类物种")
@@ -66,13 +69,14 @@ def upload_data(request):
     # with open('/tmp/%s' % f.name, 'w+') as w:
     #     for chunk in f.chunks():
     #         w.write(chunk)
-
-    return HttpResponse(cols, content_type="application/json;charset=utf-8")
+    r=json.dumps(cols)
+    return HttpResponse(r, content_type="application/json;charset=utf-8")
     # return HttpResponse(file_content)
 
-def get_latlon():
+def get_latlon(request):
     # df = pd.read_csv('/tmp/bio_data.csv', encoding='utf-8')
-    df = pd.read_csv('/tmp/bio_data.csv')
+    tempfile=request.session["tempfile"]
+    df = pd.read_csv('/tmp/'+tempfile)
     #     parse the column from the request
     long_col = 6
     lat_col = 7
