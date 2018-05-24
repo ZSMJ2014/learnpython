@@ -9,126 +9,92 @@
 
     <!--<link href="{{ STATIC_URL }}css/ol.css" rel="stylesheet">-->
     <link href="{{ STATIC_URL }}css/ol.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
-
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.origin.css">
 </head>
 
 <body>
-
-<div class="head">
-<div class="logo">
-    <img src="{{ STATIC_URL }}images/logo.jpg">
+<div>
+    <img src="{{ STATIC_URL }}images/logo.jpg" style="width:128px;height:60px;">
 </div>
+
 <h1>生物多样性在线计算</h1>
+
+
+<hr>
+<h2>生物多样性指数</h2>
+
+<ul>
+    <li>物种丰富度：物种丰富度指数反映一定空间内生物的物种丰富程度，是描述物种多样性最简单、最实用和最客观的测度。</li>
+    <li>Simpson优势度指数：强调稀有物种的重要性，用于描述个体在群落中出现的紊乱和不确定。</li>
+    <li>Shannon-Wiener多样性指数：强调常见物种的重要性，反映优势物种在群落中的地位和作用。</li>
+</ul>
+<br>
+
+<div>
+    <form method="post" enctype="multipart/form-data" id="datafile-form">
+        <label for="data-file" class="upload-btn">上传物种采样数据</label>
+        <input id="data-file" style="display:none;" type="file" name="datafile">
+        <input type="submit" hidden id="file-upload-submit"/>
+    </form>
+</div>
+<div>
+    <form method="post" id="select-col">
+        <label for="col-species">输入物种类别所在列号</label><br>
+        <input id="species" type="text" name="species"><br>
+        <br>
+        <input type="submit"/>
+    </form>
 </div>
 
-<div class="content">
-    <div class="row">
-        <h2>生物多样性指数</h2>
-        <ul class="left">
-            <li>物种丰富度：<label>物种丰富度指数反映一定空间内生物的物种丰富程度，是描述物种多样性最简单、最实用和最客观的测度。</label> </li>
-            <li>Simpson优势度指数：<label>强调稀有物种的重要性，用于描述个体在群落中出现的紊乱和不确定。</label> </li>
-            <li>Shannon-Wiener多样性指数：<label>强调常见物种的重要性，反映优势物种在群落中的地位和作用。</label> </li>
-        </ul>
-
-
-        <div class="right">
-        <div class="top">
-            <form method="post" enctype="multipart/form-data" id="datafile-form">
-                <label for="data-file" class="upload-btn">上传物种采样数据</label>
-                <input id="data-file" style="display:none;" type="file" name="datafile">
-                <input type="submit" hidden id="file-upload-submit"/>
-            </form>
-        </div>
-
-        <div class="show_form">
-
-        </div>
-
+<h2>数据显示</h2>
+<nav>
+    <div class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-table-tab" data-toggle="tab" href="#nav-table" role="tab"
+           aria-controls="nav-table" aria-selected="true">上传数据表格</a>
+        <a class="nav-item nav-link" id="nav-map-tab" data-toggle="tab" href="#nav-map" role="tab"
+           aria-controls="nav-map" aria-selected="false">采样点空间分布</a>
+        <a class="nav-item nav-link" id="nav-chart-tab" data-toggle="tab" href="#nav-chart" role="tab"
+           aria-controls="nav-chart" aria-selected="false">物种统计图</a>
     </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-table" role="tabpanel" aria-labelledby="nav-table-tab">show data
+        uploaded
     </div>
-
-
-    <div class="row" id="show_data" hidden>
-
-        <div class="desc">
-                <form method="post" id="select-col">
-                    <input class="tt" id="species" type="text" name="species" placeholder="输入物种类别所在列号">
-                    <input class="tt" id="species" type="text" name="species" placeholder="输入经度">
-                    <input class="tt" id="species" type="text" name="species" placeholder="输入纬度">
-                    <input class="sm" type="submit" value="确认"/>
-                </form>
-        </div>
-
-
-
-    <h2>数据显示
-
-
-    </h2>
-
-
-    <nav>
-        <div class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-table-tab" data-toggle="tab" href="#nav-table" role="tab"
-               aria-controls="nav-table" aria-selected="true">上传数据表格</a>
-
-            <a>|</a>
-
-            <a class="nav-item nav-link" id="nav-map-tab" data-toggle="tab" href="#nav-map" role="tab"
-               aria-controls="nav-map" aria-selected="false">采样点空间分布</a>
-
-            <a>|</a>
-
-            <a class="nav-item nav-link" id="nav-chart-tab" data-toggle="tab" href="#nav-chart" role="tab"
-               aria-controls="nav-chart" aria-selected="false">物种统计图</a>
-        </div>
-    </nav>
-    <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-table" role="tabpanel" aria-labelledby="nav-table-tab">show data
-            uploaded
-        </div>
-        <div class="tab-pane fade" id="nav-map" role="tabpanel" aria-labelledby="nav-map-tab">show samples on map</div>
-        <div class="tab-pane fade" id="nav-chart" role="tabpanel" aria-labelledby="nav-chart-tab">add chart</div>
-    </div>
-
-    <div id="sample_table"></div>
-    <script type="text/javascript">
-
-
-    </script>
-
-
-    <div id="map"></div>
-    <script>
-
-    </script>
-
-    <!--preparing a DOM with width and height for ECharts-->
-    <div id="echarts"></div>
-    <script type="text/javascript">
-
-    </script>
-
-    </div>
-
-
-    <div class="row">
-
-    <h2>生物多样性指数计算</h2>
-
-    <div>
-    <button class="button" onClick="bioindexCompute()">计算生物多样性指数</button>
-    </div>
-    <br>
-    <p id="results"></p>
-
-    </div>
-
+    <div class="tab-pane fade" id="nav-map" role="tabpanel" aria-labelledby="nav-map-tab">show samples on map</div>
+    <div class="tab-pane fade" id="nav-chart" role="tabpanel" aria-labelledby="nav-chart-tab">add chart</div>
 </div>
 
 
+<div id="sample_table"></div>
+<script type="text/javascript">
+
+
+</script>
+
+
+<div id="map"></div>
+<script>
+
+</script>
+
+<!--preparing a DOM with width and height for ECharts-->
+<div id="echarts"></div>
+<script type="text/javascript">
+
+</script>
+
+
+<h2>生物多样性指数计算</h2>
+
+<div>
+    <button onClick="bioindexCompute()">计算生物多样性指数</button>
+</div>
+<br>
+<p id="results"></p>
+
+
+<br>
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.cookie.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.form.js"></script>
@@ -208,8 +174,6 @@
             }
         });
 
-
-
         $("#data-file").on("change", function () {
             $("#file-upload-submit").trigger("click");
         });
@@ -237,11 +201,7 @@
 
         // use configuration item and data specified to show chart
         myChart.setOption(option);
-
-
     });
-
-
 
     function bioindexCompute() {
         $("#results").html("生物多样性指数计算结果如下： 物种丰富度: ; \n Simpson优势度指数： ；\n Shannon-Winner多样性指数: ;");
@@ -270,13 +230,6 @@
             minZoom: 2
         })
     });
-
-    $("#datafile-form").click(function () {
-
-            $("#show_data").show();
-
-
-        });
 
 </script>
 </body>
