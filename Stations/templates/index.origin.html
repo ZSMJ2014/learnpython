@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="{{ STATIC_URL }}css/ol.css" rel="stylesheet">
+    <script type="text/javascript" src="{{ STATIC_URL }}ol.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}csv2geojson.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}stations.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}echarts.simple.min.js"></script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            background-color:white;
+        }
+
+        #map {
+            width: 80%;
+            height: 50%;
+            margin:20px;
+            padding-top: 10px;
+            padding-right: 80px;
+            padding-bottom: 10px;
+            padding-left: 80px;
+        }
+        #echarts{
+            width:80%;
+            height:40%;
+            padding-top: 10px;
+            padding-left: 80px;
+            padding-right: 80px;
+            padding-bottom: 10px;
+        }
+        h2{
+            text-align: left;
+            color:tomato;
+            padding-left: 50px;
+            background-color: #b2f3ff;
+        }
+        h1{
+            text-align: right;
+            padding-right: 50px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div style="position:absolute; left:50px; top:20px; width:100px; height:100px; ">
+<img src="/static/images/logo.jpg" style="width:128px;height:60px;">
+</div>
+<!--
+<img src = "/static/images/logo.jpg" style="width:128px;height:60px;">-->
+<h1>生物多样性评估平台</h1>
+<hr>
+<h2>生物多样性指数</h2>
+
+<ul style ="padding-left: 100px;">
+    <li>物种丰富度：物种丰富度指数反映一定空间内生物的物种丰富程度，是描述物种多样性最简单、最实用和最客观的测度。</li>
+    <li>Simpson优势度指数：强调稀有物种的重要性，用于描述个体在群落中出现的紊乱和不确定。</li>
+    <li>Shannon-Wiener多样性指数：强调常见物种的重要性，反映优势物种在群落中的地位和作用。</li>
+</ul>
+<br>
+
+<div class="row" align="center" >
+      <div class="col-md-8 col-md-offset-2">
+          <form class="form-inline" role="form"  method="post" enctype="multipart/form-data" accept-charset="utf-8">{% csrf_token %}
+              <div class="form-group" >
+                  <input type="file" name="file" value="上传物种采样数据">
+              </div>
+              <div class="form-group">
+                  <input type="submit" value="上传物种采样数据">
+              </div>
+          </form>
+      </div>
+  </div>
+
+
+<h2>数据显示</h2>
+
+
+
+<div id="map" ></div>
+<script style="width:100">
+
+    var GD_LAYER = new ol.layer.Tile({
+        name: "img",
+        source: new ol.source.XYZ({
+            url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"
+            // url: 'http://127.0.0.1:8051/appmaptile?layer=img,cva&x={x}&y={y}&z={z}&fmt=png'
+        })
+    });
+
+    var map = new ol.Map({
+        layers: [GD_LAYER, STATIONLAYER],
+        target: 'map',
+        view: new ol.View({
+            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),
+            zoom: 4,
+            minZoom: 2
+        })
+    });
+</script>
+
+<h2>生物多样性指数计算</h2>
+
+<div align="center">
+    <button onClick="myClick1()" style="width: 150px; height: 30px; background-color: red; color:white">计算物种丰富度</button>
+    <script style="width:100">
+        var myClick1 = function()
+
+    var GD_LAYER = new ol.layer.Tile({
+        name: "img",
+        source: new ol.source.XYZ({
+            url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"
+            // url: 'http://127.0.0.1:8051/appmaptile?layer=img,cva&x={x}&y={y}&z={z}&fmt=png'
+        })
+    });
+
+    var map = new ol.Map({
+        layers: [GD_LAYER, STATIONLAYER],
+        target: 'map',
+        view: new ol.View({
+            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),
+            zoom: 4,
+            minZoom: 2
+        })
+    });
+    </script>
+    <button onClick="myClick2()" style="width: 200px; height: 30px; background-color: red; color:white">计算Simpson优势度指数</button>
+    <button onClick="myClick3()" style="width: 220px; height: 30px; background-color: red; color:white">计算Shannon-Winner多样性指数</button>
+</div>
+
+<br>
+
+<!-- preparing a DOM with width and height for ECharts -->
+<div id="echarts"></div>
+<script type="text/javascript">
+        // based on prepared DOM, initialize echarts instance
+        var myChart = echarts.init(document.getElementById('echarts'));
+
+        // specify chart configuration item and data
+        var option = {
+            title: {
+                text: '菌类物种'
+            },
+            tooltip: {},
+            legend: {
+                data:['数量']
+            },
+            xAxis: {
+                data: ["常绿阔叶林","阔叶林","落叶阔叶林","路边","针阔混交林","针叶林","竹林和水杉混交"]
+            },
+            yAxis: {},
+            series: [{
+                name: '数量',
+                type: 'bar',
+                data: [39, 264, 133, 457, 43, 2]
+            }]
+        };
+
+        // use configuration item and data specified to show chart
+        myChart.setOption(option);
+</script>
+
+</body>
+</html>
