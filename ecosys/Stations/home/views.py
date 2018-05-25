@@ -78,15 +78,17 @@ def get_latlon(request):
     tempfile=request.session["tempfile"]
     df = pd.read_csv('/tmp/'+tempfile)
     #     parse the column from the request
-    long_col = 6
-    lat_col = 7
+    # long_col = 6
+    # lat_col = 7
+    long_col = request.session['long_col']
+    lat_col = request.session['lat_col']
 
     lat_lon = df.iloc[:, long_col:lat_col+1]
     lat_lon.columns = ['d', 'c']
-    print(lat_lon)
-    lat_lon.to_csv("/tmp/latlon.csv", index=False)
+    # print(lat_lon)
+    # lat_lon.to_csv("/tmp/latlon.csv", index=False)
     # str = lat_lon.to_string(index=False)
-
+    return lat_lon
 
     # # lat_lon = pd.DataFrame(df.iloc[:,long_col:lat_col], columns=['d', 'c'])
     # # sample_loc = json.dumps(lat_lon, encoding='utf-8')
@@ -99,6 +101,15 @@ def get_latlon(request):
     # station_file.write(write_data)
     # station_file.close()
 
+@csrf_exempt
+def get_cols_num(request):
+    params = request.body
+    request.session['species_col']=params['species-col']
+    request.session['long_col']=params['long-col']
+    request.session['lat_col']=params['lat-col']
+    lonlat_info = get_latlon(request)
+
+    return HttpResponse(json.dumps(lonlat_info), content_type="application/json")
 
 def total_number_of_species(species):
     '''

@@ -63,9 +63,9 @@
 
             <div class="desc">
                 <form method="post" id="select-col">
-                    <input class="tt" id="species" type="text" name="species" placeholder="输入物种类别所在列号">
-                    <input class="tt" id="species" type="text" name="species" placeholder="输入经度所在列号">
-                    <input class="tt" id="species" type="text" name="species" placeholder="输入纬度所在列号">
+                    <input class="tt" id="species-col" type="text" name="species" placeholder="输入物种类别所在列号">
+                    <input class="tt" id="long-col" type="text" name="longitude" placeholder="输入经度所在列号">
+                    <input class="tt" id="lat-col" type="text" name="latitude" placeholder="输入纬度所在列号">
                     <input class="sm" type="submit" value="确认"/>
                 </form>
             </div>
@@ -196,6 +196,40 @@
             });
         });
 
+
+        $("#select-col").on('submit',function (event) {
+            var formData = new FromData($("#select-col"));
+            $.ajax({
+                type:'post',
+                url:"/get_cols_num",
+                data:{"species-col":formData[0],"long-col":formData[1],"lat-col":formData[2] },
+                cache:false,
+                processData:false,
+                contentType:false,
+                dataType:'json',
+                success:function (data) {
+                    var GD_LAYER = new ol.layer.Tile({
+                    name: "img",
+                    source: new ol.source.XYZ({url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"
+                    // url: 'http://127.0.0.1:8051/appmaptile?layer=img,cva&x={x}&y={y}&z={z}&fmt=png'
+                    })
+                    });
+
+                    var map = new ol.Map({
+                        layers: [GD_LAYER, STATIONLAYER],
+                        target: 'map',
+                        view: new ol.View({
+                            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),
+                            zoom: 4,
+                            minZoom: 2
+                        })
+                    });
+                },
+                error:function(){
+                    alert('指数计算数据所在列提交失败');
+            }
+            });
+        });
         {#$('#datafile-form').ajaxForm({#}
         {#    url: "/upload_data",#}
         {#    success: function (data) {#}
@@ -252,13 +286,45 @@
         {#    error: function () {#}
         {#        alert("文件上传失败");#}
         {#    }#}
-        {# });#}
+        {#});#}
+
 
 
         $("#data-file").on("change", function () {
             $("#file-upload-submit").trigger("click");
         });
-        // based on prepared DOM, initialize echarts instance
+    });
+
+    function bioindexCompute() {
+        $("#results").html("生物多样性指数计算结果如下： 物种丰富度: ; \n Simpson优势度指数： ；\n Shannon-Winner多样性指数: ;");
+    }
+
+    function csrfSafeMethod(method) {
+// these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+
+    var GD_LAYER = new ol.layer.Tile({
+        name: "img",
+        source: new ol.source.XYZ({
+            url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"
+// url: 'http://127.0.0.1:8051/appmaptile?layer=img,cva&x={x}&y={y}&z={z}&fmt=png'
+        })
+    });
+
+    var map = new ol.Map({
+        layers: [GD_LAYER, STATIONLAYER],
+        target: 'map',
+        view: new ol.View({
+            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),
+            zoom: 4,
+            minZoom: 2
+        })
+    });
+
+
+    // based on prepared DOM, initialize echarts instance
         var myChart = echarts.init(document.getElementById('echarts'));
         // specify chart configuration item and data
         var option = {
