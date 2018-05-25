@@ -49,7 +49,7 @@ def upload_data(request):
     f = request.FILES['datafile']
     excel_raw_data = pd.read_excel(f)
     tempfile=str(time.time()*1000)+".csv"
-    excel_raw_data.to_csv('/tmp/'+tempfile, encoding='utf-8')
+    excel_raw_data.to_csv('/tmp/'+tempfile, encoding='utf-8',index=False)
     request.session["tempfile"]=tempfile
 
     cols=list(excel_raw_data.columns)
@@ -72,6 +72,32 @@ def upload_data(request):
     r=json.dumps(cols)
     return HttpResponse(r, content_type="application/json;charset=utf-8")
     # return HttpResponse(file_content)
+
+@csrf_exempt
+def submit_cols_num(request):
+    request.session['species_col'] = int(request.POST.get('species-col'))
+    request.session['long_col'] = int(request.POST.get('long-col'))
+    request.session['lat_col'] = int(request.POST.get('lat-col'))
+    # params = request.post
+    # print(params)
+    #
+    # request.session['species_col']=int(params['species-col'])
+    # request.session['long_col']=int(params['long-col'])
+    # request.session['lat_col']=int(params['lat-col'])
+
+    tempfile = request.session["tempfile"]
+    df = pd.read_csv('/tmp/' + tempfile)
+    long_col = request.session['long_col']
+    lat_col = request.session['lat_col']
+
+    long_df = df.iloc[:,long_col]
+    lat_df = df.iloc[:,lat_col]
+    lat_long_df = pd.concat([lat_df, long_df],axis=1)
+
+    lat_long_df.columns = ['c', 'd']
+    lat_lon_info = lat_long_df.to_string(index=False, index_names=False)
+    # STATION_DATA = "a,b,c,d\n50136,漠河,52.13,122.52\n";
+    return HttpResponse(json.dumps(lat_lon_info), content_type="application/json")
 
 def get_latlon(request):
     # df = pd.read_csv('/tmp/bio_data.csv', encoding='utf-8')
@@ -101,15 +127,7 @@ def get_latlon(request):
     # station_file.write(write_data)
     # station_file.close()
 
-@csrf_exempt
-def get_cols_num(request):
-    params = request.body
-    request.session['species_col']=params['species-col']
-    request.session['long_col']=params['long-col']
-    request.session['lat_col']=params['lat-col']
-    lonlat_info = get_latlon(request)
 
-    return HttpResponse(json.dumps(lonlat_info), content_type="application/json")
 
 def total_number_of_species(species):
     '''

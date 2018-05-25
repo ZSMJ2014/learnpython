@@ -33,7 +33,8 @@
 <div class="container-fluid">
     <div class="content">
         <div class="row">
-            <h2>采样数据预处理</h2>
+            <h2>指数介绍</h2>
+            {#            <h2>采样数据预处理</h2>#}
             <ul class="left">
                 <li>物种丰富度：<label>物种丰富度指数反映一定空间内生物的物种丰富程度，是描述物种多样性最简单、最实用和最客观的测度。</label></li>
                 <li>Simpson优势度指数：<label>强调稀有物种的重要性，用于描述个体在群落中出现的紊乱和不确定。</label></li>
@@ -62,19 +63,14 @@
         <div class="row" id="show_data" hidden>
 
             <div class="desc">
-                <form method="post" id="select-col">
-                    <input class="tt" id="species-col" type="text" name="species" placeholder="输入物种类别所在列号">
-                    <input class="tt" id="long-col" type="text" name="longitude" placeholder="输入经度所在列号">
-                    <input class="tt" id="lat-col" type="text" name="latitude" placeholder="输入纬度所在列号">
-                    <input class="sm" type="submit" value="确认"/>
-                </form>
+                <input class="tt" id="species-col" type="text" name="species" placeholder="输入物种类别所在列号">
+                <input class="tt" id="long-col" type="text" name="longitude" placeholder="输入经度所在列号">
+                <input class="tt" id="lat-col" type="text" name="latitude" placeholder="输入纬度所在列号">
+                <button type="button" class="btn btn-success" id="params_submit">确认</button>
             </div>
 
 
-            <h2>数据显示
-
-
-            </h2>
+            <h2>数据显示</h2>
 
 
             <nav>
@@ -197,17 +193,13 @@
         });
 
 
-        $("#select-col").on('submit',function (event) {
-            var formData = new FromData($("#select-col"));
+        $("#params_submit").on('click',function () {
             $.ajax({
                 type:'post',
-                url:"/get_cols_num",
-                data:{"species-col":formData[0],"long-col":formData[1],"lat-col":formData[2] },
-                cache:false,
-                processData:false,
-                contentType:false,
+                url:"/submit_cols_num",
+                data:{"species-col":$("#species-col").val(),"long-col":$("#long-col").val(),"lat-col":$("#lat-col").val()},
                 dataType:'json',
-                success:function (data) {
+                success:function (sample_location) {
                     var GD_LAYER = new ol.layer.Tile({
                     name: "img",
                     source: new ol.source.XYZ({url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"
@@ -305,23 +297,23 @@
     }
 
 
-    var GD_LAYER = new ol.layer.Tile({
-        name: "img",
-        source: new ol.source.XYZ({
-            url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"
-// url: 'http://127.0.0.1:8051/appmaptile?layer=img,cva&x={x}&y={y}&z={z}&fmt=png'
-        })
-    });
-
-    var map = new ol.Map({
-        layers: [GD_LAYER, STATIONLAYER],
-        target: 'map',
-        view: new ol.View({
-            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),
-            zoom: 4,
-            minZoom: 2
-        })
-    });
+{#    var GD_LAYER = new ol.layer.Tile({#}
+{#        name: "img",#}
+{#        source: new ol.source.XYZ({#}
+{#            url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"#}
+{#// url: 'http://127.0.0.1:8051/appmaptile?layer=img,cva&x={x}&y={y}&z={z}&fmt=png'#}
+{#        })#}
+{#    });#}
+{##}
+{#    var map = new ol.Map({#}
+{#        layers: [GD_LAYER, STATIONLAYER],#}
+{#        target: 'map',#}
+{#        view: new ol.View({#}
+{#            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),#}
+{#            zoom: 4,#}
+{#            minZoom: 2#}
+{#        })#}
+{#    });#}
 
 
     // based on prepared DOM, initialize echarts instance
@@ -361,23 +353,23 @@
     }
 
 
-    var GD_LAYER = new ol.layer.Tile({
-        name: "img",
-        source: new ol.source.XYZ({
-            url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"
-// url: 'http://127.0.0.1:8051/appmaptile?layer=img,cva&x={x}&y={y}&z={z}&fmt=png'
-        })
-    });
-
-    var map = new ol.Map({
-        layers: [GD_LAYER, STATIONLAYER],
-        target: 'map',
-        view: new ol.View({
-            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),
-            zoom: 4,
-            minZoom: 2
-        })
-    });
+{#    var GD_LAYER = new ol.layer.Tile({#}
+{#        name: "img",#}
+{#        source: new ol.source.XYZ({#}
+{#            url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"#}
+{#// url: 'http://127.0.0.1:8051/appmaptile?layer=img,cva&x={x}&y={y}&z={z}&fmt=png'#}
+{#        })#}
+{#    });#}
+{##}
+{#    var map = new ol.Map({#}
+{#        layers: [GD_LAYER, STATIONLAYER],#}
+{#        target: 'map',#}
+{#        view: new ol.View({#}
+{#            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),#}
+{#            zoom: 4,#}
+{#            minZoom: 2#}
+{#        })#}
+{#    });#}
 
     $("#datafile-form").click(function () {
 
