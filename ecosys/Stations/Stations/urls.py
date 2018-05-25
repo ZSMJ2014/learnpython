@@ -16,11 +16,14 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from home.views import index, upload_data
+from home.views import index, upload_data, submit_cols_num, show_chart, cal_bioindex
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^upload_data', upload_data),
+    url(r'^submit_cols_num', submit_cols_num),
+    url(r'^show_chart', show_chart),
+    url(r'^cal_bioindex', cal_bioindex),
     url(r'^$', index),
 ]
 

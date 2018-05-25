@@ -90,15 +90,19 @@
                        aria-controls="nav-chart" aria-selected="false">物种统计图</a>
                 </div>
             </nav>
+
             <div class="tab-content" id="nav-tabContent">
 {#                <div class="tab-pane fade show active" id="nav-table" role="tabpanel" aria-labelledby="nav-table-tab">#}
 {#                    show#}
 {#                    data#}
 {#                    uploaded#}
 {#                </div>#}
-                <div class="tab-pane fade show active" id="nav-map" role="tabpanel" aria-labelledby="nav-map-tab"> <div id="map" style="width:1000px; height:500px"></div>
+                <div class="tab-pane fade active in" id="nav-map" role="tabpanel" aria-labelledby="nav-map-tab">
+                    <div id="map" style="width:100%; height:500px"></div>
                 </div>
-                <div class="tab-pane fade" id="nav-chart" role="tabpanel" aria-labelledby="nav-chart-tab">add chart
+
+                <div class="tab-pane fade" id="nav-chart" role="tabpanel" aria-labelledby="nav-chart-tab">
+                    <div id="species_chart" style="width:100%; height:500px"></div>
                 </div>
             </div>
 
@@ -115,10 +119,10 @@
 {#            </script>#}
 
             <!--preparing a DOM with width and height for ECharts-->
-            <div id="echarts"></div>
-            <script type="text/javascript">
-
-            </script>
+{#            <div id="echarts"></div>#}
+{#            <script type="text/javascript">#}
+{##}
+{#            </script>#}
 
         </div>
 
@@ -128,7 +132,7 @@
             <h2>多样性指数计算</h2>
 
             <div>
-                <button class="button" onClick="bioindexCompute()">计算生物多样性指数</button>
+                <button class="button" id="bioindexCompute">计算生物多样性指数</button>
             </div>
             <br>
             <p id="results"></p>
@@ -151,286 +155,7 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/echarts.simple.min.js"></script>
 
 <script>
-    var GD_LAYER = new ol.layer.Tile({
-    name: "img",
-    source: new ol.source.XYZ({url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"
-    })
-    });
-
-    var map = new ol.Map({
-        layers: [GD_LAYER],
-        target: 'map',
-        view: new ol.View({
-            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),
-            zoom: 4,
-            minZoom: 2
-        })
-    });
-
-    var STATIONLAYER = null;
-
-    $(function () {
-        $.ajaxSetup({
-            beforeSend: function (xhr, settings) {
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    var csrftoken = $.cookie('csrftoken');
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            }
-        });
-        $("#file-upload-submit").click(function () {
-            var formData = new FormData($("#datafile-form")[0]);
-            $.ajax({
-                type: "post",
-                url: "/upload_data",
-                data: formData,
-                cache: false,
-                processData: false,
-                contentType: false,
-                dataType: "json",
-                success: function (data) {
-                    console.log(data);
-                    $('#table_data').empty();
-                    var rowArr = data.split('\n');
-
-                    var collen = rowArr[0].replace(/\s+/g, ',').split(',').length;
-
-                    var firstrow = $("<tr>")
-                    for (var i = 0; i <collen; i++) {
-                        firstrow.append('<td>' + i + '</td>');
-                    };
-                    $("#table_data").append(firstrow);
-
-                    for(var r=0; r<rowArr.length; r++){
-                        {#                    连续多个空格替换为逗号#}
-                        var rowdata = rowArr[r].replace(/\s+/g, ',').split(',');
-                        var tr = $("<tr>")
-                        for (var i = 0; i < collen; i++) {
-                            tr.append('<td>' + rowdata[i] + '</td>');
-                        };
-                        $("#table_data").append(tr);
-                    }
-                },
-                error: function () {
-                    alert('上传失败');
-                }
-            });
-        });
-
-
-        $("#params_submit").on('click',function () {
-            $.ajax({
-                type:'post',
-                url:"/submit_cols_num",
-                data:{"species-col":$("#species-col").val(),"long-col":$("#long-col").val(),"lat-col":$("#lat-col").val()},
-                success:function (sample_location) {
-                    var STATION_DATA = sample_location.replace(/ + /g, ',');
-                    var stationSource = new ol.source.Vector();
-                    var STATION_FEATURES = null;
-                    csv2geojson.csv2geojson(STATION_DATA, {
-                        latfield: "c",
-                        lonfield: "d",
-                        delimiter: ",",
-                        src_crs: "EPSG:4326",
-                        dst_crs: "EPSG:3857"
-                    }, function (err, data) {
-                        STATION_FEATURES = (new ol.format.GeoJSON()).readFeatures(data);
-                        stationSource.addFeatures(STATION_FEATURES);
-                    });
-
-                    if (STATIONLAYER != null){
-                        map.removeLayer(STATIONLAYER)
-                    }
-
-                    STATIONLAYER = new ol.layer.Vector({
-                        source: new ol.source.Cluster({
-                            distance: 40,
-                            source: stationSource
-                        }),
-                        style: function (feature) {
-                            var size = feature.get('features').length;
-                            return new ol.style.Style({
-                                image: new ol.style.Icon({
-                                    src: "/static/poi.png",
-                                    anchor: [0.5, 1]
-                                }),
-                                text: new ol.style.Text({
-                                    text: size.toString(),
-                                    fill: new ol.style.Fill({
-                                        color: '#fff'
-                                    }),
-                                    offsetX: 0,
-                                    offsetY: -15
-                                })
-                            });
-                        }
-                    });
-                    map.addLayer(STATIONLAYER)
-
-                    console.log(sample_location);
-                },
-                error:function(){
-                    alert('指数计算数据所在列提交失败');
-            }
-            });
-        });
-        {#$('#datafile-form').ajaxForm({#}
-        {#    url: "/upload_data",#}
-        {#    success: function (data) {#}
-        {#        //显示data#}
-        {#        var list = data.split('\n');#}
-        {#        alert(list[0]);#}
-        {##}
-        {#        //生成html table#}
-        {#        var table = $('<table>');#}
-        {#        var rowArr = data.split('\n');#}
-        {#        var collen = rowArr[10].split(',').length;#}
-        {##}
-        {#        var firstrow = $('<tr>').css("background-color", "lightgrey");#}
-        {#        for (var j = 0; j < collen; j++) {#}
-        {#            var tcol = $('<td>').text(j);#}
-        {#            firstrow.append(tcol);#}
-        {#        }#}
-        {#        table.append(firstrow)#}
-        {##}
-        {#        if (rowArr.length < 10) {#}
-        {#            for (var i = 0; i < rowArr.length; i++) {#}
-        {#                var trow = $('<tr>');#}
-        {#                var colArr = rowArr[i].split(',');#}
-        {#                for (var j = 0; j < colArr.length; j++) {#}
-        {#                    var tcol = $('<td>').text(colArr[j]);#}
-        {#                    trow.append(tcol);#}
-        {#                }#}
-        {#                table.append(trow);#}
-        {#            }#}
-        {#        } else {#}
-        {#            for (var i = 0; i < 10; i++) {#}
-        {#                var trow = $('<tr>');#}
-        {#                var colArr = rowArr[i].split(',');#}
-        {#                for (var j = 0; j < colArr.length; j++) {#}
-        {#                    var tcol = $('<td>').text(colArr[j]);#}
-        {#                    tcol.addClass('cell')#}
-        {#                    trow.append(tcol);#}
-        {#                }#}
-        {#                table.append(trow);#}
-        {#            }#}
-        {#            var lastrow = $('<tr>');#}
-        {#            for (var j = 0; j < collen; j++) {#}
-        {#                var tcol = $('<td>').text('...');#}
-        {#                lastrow.append(tcol);#}
-        {#            }#}
-        {#            table.append(lastrow)#}
-        {#        }#}
-        {##}
-        {#        $('#table').append(table)#}
-        {##}
-        {##}
-        {#    },#}
-        {##}
-        {#    error: function () {#}
-        {#        alert("文件上传失败");#}
-        {#    }#}
-        {# });#}
-
-
-
-        $("#data-file").on("change", function () {
-            $("#file-upload-submit").trigger("click");
-        });
-    });
-
-    function bioindexCompute() {
-        $("#results").html("生物多样性指数计算结果如下： 物种丰富度: ; \n Simpson优势度指数： ；\n Shannon-Winner多样性指数: ;");
-    }
-
-    function csrfSafeMethod(method) {
-// these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-
-
-{#    var GD_LAYER = new ol.layer.Tile({#}
-{#        name: "img",#}
-{#        source: new ol.source.XYZ({#}
-{#            url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"#}
-{#// url: 'http://127.0.0.1:8051/appmaptile?layer=img,cva&x={x}&y={y}&z={z}&fmt=png'#}
-{#        })#}
-{#    });#}
-{##}
-{#    var map = new ol.Map({#}
-{#        layers: [GD_LAYER, STATIONLAYER],#}
-{#        target: 'map',#}
-{#        view: new ol.View({#}
-{#            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),#}
-{#            zoom: 4,#}
-{#            minZoom: 2#}
-{#        })#}
-{#    });#}
-
-
-    // based on prepared DOM, initialize echarts instance
-        var myChart = echarts.init(document.getElementById('echarts'));
-        // specify chart configuration item and data
-        var option = {
-            title: {
-                text: '菌类物种'
-            },
-            tooltip: {},
-            legend: {
-                data: ['数量']
-            },
-            xAxis: {
-                data: ["常绿阔叶林", "阔叶林", "落叶阔叶林", "路边", "针阔混交林", "针叶林", "竹林和水杉混交"]
-            },
-            yAxis: {},
-            series: [{
-                name: '数量',
-                type: 'bar',
-                data: [39, 264, 133, 457, 43, 2]
-            }]
-        };
-
-        // use configuration item and data specified to show chart
-        myChart.setOption(option);
-
-
-
-    function bioindexCompute() {
-        $("#results").html("生物多样性指数计算结果如下： 物种丰富度: ; \n Simpson优势度指数： ；\n Shannon-Winner多样性指数: ;");
-    }
-
-    function csrfSafeMethod(method) {
-// these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-
-
-{#    var GD_LAYER = new ol.layer.Tile({#}
-{#        name: "img",#}
-{#        source: new ol.source.XYZ({#}
-{#            url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"#}
-{#// url: 'http://127.0.0.1:8051/appmaptile?layer=img,cva&x={x}&y={y}&z={z}&fmt=png'#}
-{#        })#}
-{#    });#}
-{##}
-{#    var map = new ol.Map({#}
-{#        layers: [GD_LAYER, STATIONLAYER],#}
-{#        target: 'map',#}
-{#        view: new ol.View({#}
-{#            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),#}
-{#            zoom: 4,#}
-{#            minZoom: 2#}
-{#        })#}
-{#    });#}
-
-    $("#datafile-form").click(function () {
-
-        $("#show_data").show();
-        $(".show_form").show();
-
-
-    });
-
+  // {% include "index.js" %}
 </script>
 </body>
 </html>

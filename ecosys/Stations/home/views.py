@@ -104,6 +104,24 @@ def submit_cols_num(request):
     # STATION_DATA = "a,b,c,d\n50136,漠河,52.13,122.52\n";
     return HttpResponse(json.dumps(lat_lon_info), content_type="application/json")
 
+@csrf_exempt
+def show_chart(request):
+    '''
+    :param species:物种类型列数据dataframe格式
+    :return:物种数量分布，用于制作echarts
+    '''
+    tempfile = request.session["tempfile"]
+    df = pd.read_csv('/tmp/' + tempfile)
+    spe_col = request.session['species_col']
+    species = df.iloc[:,spe_col]
+
+    unique = np.unique(species)
+    spe_num = {}
+    for s in unique:
+        spe_num[s] = (species == s).sum()
+    spe_num=json.dumps(spe_num,encoding='utf-8')
+    return HttpResponse(spe_num, content_type="application/json")
+
 def get_latlon(request):
     # df = pd.read_csv('/tmp/bio_data.csv', encoding='utf-8')
     tempfile=request.session["tempfile"]
@@ -191,15 +209,21 @@ def pielouaverage_index(species):
     print("Pielou均匀度指数: %s"%pielouavg_idx)
     return pielouavg_idx
 
+@csrf_exempt
 def cal_bioindex(request):
-    df = pd.read_csv('/tmp/bio_data.csv')
-#     parse the column from the request
-    spec_col = 1
-    species = df[[spec_col]]
+#     df = pd.read_csv('/tmp/bio_data.csv')
+# #     parse the column from the request
+#     spec_col = 1
+    tempfile = request.session["tempfile"]
+    df = pd.read_csv('/tmp/' + tempfile)
+    spe_col = request.session['species_col']
+    species = df.iloc[:, spe_col]
     total_num_of_species = total_number_of_species(species)
     simpson_idx = simpson_index(species)
     shannonwiener_idx = shannonwiener_index(species)
-    index_results = json.dumps({"物种丰富度": total_num_of_species, "Simpson优势度指数": simpson_idx, "Shannon-Wiener多样性指数": shannonwiener_idx })
+
+    index_results = json.dumps({"r": total_num_of_species, "s": simpson_idx, "sw": shannonwiener_idx })
+
     return HttpResponse(index_results, content_type="application/json; charset=utf-8")
 
 def test_mapvis():
