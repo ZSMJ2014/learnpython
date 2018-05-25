@@ -165,6 +165,10 @@
                     $('#table_data').empty();
                     var tr=$("<tr>")
                     for(var i=0;i<data.length;i++){
+                     tr.append('<td>'+i+'</td>')};
+                    $("#table_data").append(tr);
+                    var tr=$("<tr>")
+                    for(var i=0;i<data.length;i++){
                         tr.append('<td>'+data[i]+'</td>');
                     }
                     $("#table_data").append(tr);
