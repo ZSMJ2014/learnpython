@@ -52,8 +52,8 @@
                     </form>
                 </div>
 
-                <div class="show_form">
-                    <table id="table_data" class="table table-bordered"></table>
+                <div class="show_form"">
+                    <table id="table_data" class="table table-bordered" ></table>
                 </div>
 
             </div>
@@ -110,7 +110,7 @@
             </script>
 
 
-            <div id="map"></div>
+            <div id="map" style="width:1000px; height:500px"></div>
             <script>
 
             </script>
@@ -152,6 +152,24 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/echarts.simple.min.js"></script>
 
 <script>
+    var GD_LAYER = new ol.layer.Tile({
+    name: "img",
+    source: new ol.source.XYZ({url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"
+    })
+    });
+
+    var map = new ol.Map({
+        layers: [GD_LAYER],
+        target: 'map',
+        view: new ol.View({
+            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),
+            zoom: 4,
+            minZoom: 2
+        })
+    });
+
+    var STATIONLAYER = null;
+
     $(function () {
         $.ajaxSetup({
             beforeSend: function (xhr, settings) {
@@ -174,17 +192,25 @@
                 success: function (data) {
                     console.log(data);
                     $('#table_data').empty();
-                    var tr = $("<tr>")
-                    for (var i = 0; i < data.length; i++) {
-                        tr.append('<td>' + i + '</td>')
+                    var rowArr = data.split('\n');
+
+                    var collen = rowArr[0].replace(/\s+/g, ',').split(',').length;
+
+                    var firstrow = $("<tr>")
+                    for (var i = 0; i <collen; i++) {
+                        firstrow.append('<td>' + i + '</td>');
+                    };
+                    $("#table_data").append(firstrow);
+
+                    for(var r=0; r<rowArr.length; r++){
+                        {#                    连续多个空格替换为逗号#}
+                        var rowdata = rowArr[r].replace(/\s+/g, ',').split(',');
+                        var tr = $("<tr>")
+                        for (var i = 0; i < collen; i++) {
+                            tr.append('<td>' + rowdata[i] + '</td>');
+                        };
+                        $("#table_data").append(tr);
                     }
-                    ;
-                    $("#table_data").append(tr);
-                    var tr = $("<tr>")
-                    for (var i = 0; i < data.length; i++) {
-                        tr.append('<td>' + data[i] + '</td>');
-                    }
-                    $("#table_data").append(tr);
                 },
                 error: function () {
                     alert('上传失败');
@@ -198,24 +224,51 @@
                 type:'post',
                 url:"/submit_cols_num",
                 data:{"species-col":$("#species-col").val(),"long-col":$("#long-col").val(),"lat-col":$("#lat-col").val()},
-                dataType:'json',
                 success:function (sample_location) {
-                    var GD_LAYER = new ol.layer.Tile({
-                    name: "img",
-                    source: new ol.source.XYZ({url: "https://webst0{1-4}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}"
-                    // url: 'http://127.0.0.1:8051/appmaptile?layer=img,cva&x={x}&y={y}&z={z}&fmt=png'
-                    })
+                    var STATION_DATA = sample_location.replace(/ + /g, ',');
+                    var stationSource = new ol.source.Vector();
+                    var STATION_FEATURES = null;
+                    csv2geojson.csv2geojson(STATION_DATA, {
+                        latfield: "c",
+                        lonfield: "d",
+                        delimiter: ",",
+                        src_crs: "EPSG:4326",
+                        dst_crs: "EPSG:3857"
+                    }, function (err, data) {
+                        STATION_FEATURES = (new ol.format.GeoJSON()).readFeatures(data);
+                        stationSource.addFeatures(STATION_FEATURES);
                     });
 
-                    var map = new ol.Map({
-                        layers: [GD_LAYER, STATIONLAYER],
-                        target: 'map',
-                        view: new ol.View({
-                            center: ol.proj.transform([107.6, 35.2], 'EPSG:4326', 'EPSG:3857'),
-                            zoom: 4,
-                            minZoom: 2
-                        })
+                    if (STATIONLAYER != null){
+                        map.removeLayer(STATIONLAYER)
+                    }
+
+                    STATIONLAYER = new ol.layer.Vector({
+                        source: new ol.source.Cluster({
+                            distance: 40,
+                            source: stationSource
+                        }),
+                        style: function (feature) {
+                            var size = feature.get('features').length;
+                            return new ol.style.Style({
+                                image: new ol.style.Icon({
+                                    src: "/static/poi.png",
+                                    anchor: [0.5, 1]
+                                }),
+                                text: new ol.style.Text({
+                                    text: size.toString(),
+                                    fill: new ol.style.Fill({
+                                        color: '#fff'
+                                    }),
+                                    offsetX: 0,
+                                    offsetY: -15
+                                })
+                            });
+                        }
                     });
+                    map.addLayer(STATIONLAYER)
+
+                    console.log(sample_location);
                 },
                 error:function(){
                     alert('指数计算数据所在列提交失败');

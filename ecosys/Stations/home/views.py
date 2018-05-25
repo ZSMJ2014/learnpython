@@ -52,7 +52,11 @@ def upload_data(request):
     excel_raw_data.to_csv('/tmp/'+tempfile, encoding='utf-8',index=False)
     request.session["tempfile"]=tempfile
 
-    cols=list(excel_raw_data.columns)
+    headrows = excel_raw_data.iloc[:5,]
+    string = headrows.to_string(index=False, header=True )
+    print(string)
+    # cols=list(excel_raw_data.columns)
+
     # table=excel_raw_data.parse("菌类物种")
     # sheet = f.get_sheet()
     # array = f.get_array()
@@ -69,7 +73,8 @@ def upload_data(request):
     # with open('/tmp/%s' % f.name, 'w+') as w:
     #     for chunk in f.chunks():
     #         w.write(chunk)
-    r=json.dumps(cols)
+    r=json.dumps(string)
+    print(r)
     return HttpResponse(r, content_type="application/json;charset=utf-8")
     # return HttpResponse(file_content)
 
