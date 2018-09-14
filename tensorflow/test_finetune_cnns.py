@@ -291,17 +291,16 @@ def get_models(input_shape, num_classes, model_name, weights='imagenet'):
 
 
 if __name__ == '__main__':
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--fine_tune_with_imagenet', default=True)
     parser.add_argument('--train_from_scratch', default=False)
     parser.add_argument('--test_only', default=False)
     parser.add_argument('--data_path',
-                        default='/data/eko.ai-project/view_classification_data_model/echo_modality_a4c_a5c_without_split_clean/')
+                        default='/home/zjh/test_finetune/UCMerced_LandUse/Images/')
     parser.add_argument('--train_num_epochs', default=1)
     parser.add_argument('--train_batch_size', default=32)
     parser.add_argument('--k_folds', default=2)
-    parser.add_argument('--model_save_path', default='/data/eko.ai-project/Prototype_Run_Classified/')
+    parser.add_argument('--model_save_path', default='/home/zjh/test_finetune/model/')
     parser.add_argument('--GPUs', default=None)  # None means using GPU as memory grows, int means use specific GPUs
     parser.add_argument('--save_all_predictions', default=False)
     args = parser.parse_args()
